@@ -15,7 +15,7 @@ import com.example.backend.service.ProfessorService;
 import com.example.backend.service.UserService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://frontend-nine-delta-58.vercel.app")
 public class LoginController {
 
     @Autowired
