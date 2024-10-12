@@ -25,7 +25,7 @@ import com.example.backend.service.ProfessorService;
 import com.example.backend.service.WishListService;
 
 @RestController
-@CrossOrigin(origins = "https://frontend-nine-delta-58.vercel.app")
+@CrossOrigin(origins = "https://frontend-rho-red-58.vercel.app")
 public class ProfessorController {
     @Autowired
 	private ProfessorService professorService;

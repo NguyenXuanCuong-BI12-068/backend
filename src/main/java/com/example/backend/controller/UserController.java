@@ -34,7 +34,7 @@ import com.example.backend.service.WishListService;
 
 
 @RestController
-@CrossOrigin(origins = "https://frontend-nine-delta-58.vercel.app")
+@CrossOrigin(origins = "https://frontend-rho-red-58.vercel.app")
 public class UserController {
     @Autowired
     private UserService userService;
