@@ -196,7 +196,7 @@ public class ProfessorController {
 	@GetMapping("/getcoursenames")
     public ResponseEntity<List<String>> getCourseNames() throws Exception {
         // Fetch courses of type 'YouTube'
-        List<Course> courses = courseService.getCoursesByTypeName("YouTube");
+        List<Course> courses = courseService.getCoursesByTypeName("Youtube");
         List<String> coursenames = new ArrayList<>();
         for(Course obj : courses) {
             coursenames.add(obj.getCoursename());
