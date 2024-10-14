@@ -44,10 +44,12 @@ public class ProfessorController {
 	private WishListService wishlistService;
 
 	@Autowired
-	private EnrollmentService enrollmentService;
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private EnrollmentService enrollmentService;
+
+
 	
 	
 	@GetMapping("/professorlist")
@@ -117,7 +119,6 @@ public class ProfessorController {
 		
 		return courseService.addNewCourse(course);
 	}
-
 	@GetMapping("/listCourse/{email}")
 	public ResponseEntity<List<Map<String, Object>>> listCoursesByProfessor(@PathVariable String email) {
 		Professor professor = professorService.fetchProfessorByEmail(email);
@@ -174,6 +175,14 @@ public class ProfessorController {
 		chapterService.updateChaptersByCourse(coursename, existingCourse.getCoursename());
 		return ResponseEntity.ok(editedCourse);
 	}
+
+
+
+
+
+
+
+
 	
 	@PostMapping("/addnewchapter")
     public Chapter addNewChapters(@RequestBody Chapter chapter) throws Exception {
@@ -279,7 +288,8 @@ public class ProfessorController {
 		List<Course> todayCourses = courseService.getCoursesUploadedToday();
 		return new ResponseEntity<>(todayCourses, HttpStatus.OK);
 	}
-	
+
+
 	
 	public String getNewID()
 	{

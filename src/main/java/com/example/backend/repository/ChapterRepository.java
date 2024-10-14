@@ -12,4 +12,5 @@ public interface ChapterRepository extends JpaRepository<Chapter, Integer> {
     public List<Chapter> findByCoursename(String Coursename);
     public List<Chapter> findAllByCoursename(String coursename);
 
+
 }

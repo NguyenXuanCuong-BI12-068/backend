@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.example.backend.model.Enrollment;
 import com.example.backend.repository.EnrollmentRepository;
 
+
 @Service
 public class EnrollmentService {
     @Autowired
@@ -97,7 +98,7 @@ public class EnrollmentService {
 	{
 		return (List<Enrollment>)enrollmentRepo.findByLanguage(language);
 	}
-
+	
 	public List<Enrollment> getAllEnrollmentsByCoursename(String coursename)
 	{
 		return enrollmentRepo.findAllByCoursename(coursename);
@@ -111,4 +112,6 @@ public class EnrollmentService {
 			enrollmentRepo.save(enrollment);
 		}
 	}
+	
+
 }
