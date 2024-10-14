@@ -66,4 +66,12 @@ public class ChapterService {
             return chapterRepo.save(existingChapter);
         }
     }
+
+    public void updateChaptersByCourse(String oldCourseName, String newCourseName) {
+        List<Chapter> chapters = chapterRepo.findAllByCoursename(oldCourseName);
+        for (Chapter chapter : chapters) {
+            chapter.setCoursename(newCourseName);
+            chapterRepo.save(chapter);
+        }
+    }
 }

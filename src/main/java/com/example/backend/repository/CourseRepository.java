@@ -23,6 +23,8 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     public List<Course> findByEnrolleddate(String enrolleddate);
 	
 	public List<Course> findByCoursetype(String coursetype);
+
+	public List<Course> findByCoursetypeAndInstructorname(String coursetype, String instructorname);
 	
 	public List<Course> findByYoutubeurl(String youtubeurl);
 	
@@ -32,6 +34,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 	
 	public List<Course> findByLanguage(String language);
 
+	List<Course> findByEnrolleddateEquals(String enrolleddate);
 
 	
 

@@ -97,4 +97,18 @@ public class EnrollmentService {
 	{
 		return (List<Enrollment>)enrollmentRepo.findByLanguage(language);
 	}
+
+	public List<Enrollment> getAllEnrollmentsByCoursename(String coursename)
+	{
+		return enrollmentRepo.findAllByCoursename(coursename);
+	}
+
+	public void updateEnrollmentsByCourse(String oldCourseName, String newCourseName, String newDescription) {
+		List<Enrollment> enrollments = enrollmentRepo.findAllByCoursename(oldCourseName);
+		for (Enrollment enrollment : enrollments) {
+			enrollment.setCoursename(newCourseName);
+			enrollment.setDescription(newDescription);
+			enrollmentRepo.save(enrollment);
+		}
+	}
 }

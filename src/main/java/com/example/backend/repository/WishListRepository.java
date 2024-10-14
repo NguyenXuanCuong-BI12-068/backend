@@ -25,4 +25,6 @@ public interface WishListRepository extends JpaRepository<Wishlist, Long> {
     public List<Wishlist> findBySkilllevel(String skilllevel);
 	
 	public List<Wishlist> findByLanguage(String language);
+
+	public List<Wishlist> findAllByCoursename(String coursename);
 }

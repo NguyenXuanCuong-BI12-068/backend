@@ -37,6 +37,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer>
     public List<Enrollment> findBySkilllevel(String skilllevel);
 	
 	public List<Enrollment> findByLanguage(String language);
+
+	public List<Enrollment> findAllByCoursename(String coursename);
 	
 	@Transactional
 	@Modifying

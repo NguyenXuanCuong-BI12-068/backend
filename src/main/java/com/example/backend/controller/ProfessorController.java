@@ -1,7 +1,9 @@
 package com.example.backend.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.backend.model.Chapter;
 import com.example.backend.model.Course;
+import com.example.backend.model.Enrollment;
 import com.example.backend.model.Professor;
 import com.example.backend.model.Wishlist;
 import com.example.backend.service.ChapterService;
 import com.example.backend.service.CourseService;
+import com.example.backend.service.EnrollmentService;
 import com.example.backend.service.ProfessorService;
 import com.example.backend.service.WishListService;
 
@@ -38,6 +42,9 @@ public class ProfessorController {
 	
 	@Autowired
 	private WishListService wishlistService;
+
+	@Autowired
+	private EnrollmentService enrollmentService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -109,6 +116,63 @@ public class ProfessorController {
 		course.setCourseid(newID);
 		
 		return courseService.addNewCourse(course);
+	}
+
+	@GetMapping("/listCourse/{email}")
+	public ResponseEntity<List<Map<String, Object>>> listCoursesByProfessor(@PathVariable String email) {
+		Professor professor = professorService.fetchProfessorByEmail(email);
+		if (professor == null) {
+			return ResponseEntity.notFound().build();
+		}
+
+		List<Course> courses = courseService.getCoursesByInstructorName(professor.getProfessorname());
+		List<Map<String, Object>> result = new ArrayList<>();
+
+		for (Course course : courses) {
+			Map<String, Object> courseInfo = new HashMap<>();
+			courseInfo.put("course", course);
+			
+			List<Enrollment> enrollments = enrollmentService.getAllEnrollmentsByCoursename(course.getCoursename());
+			courseInfo.put("enrollments", enrollments);
+
+			result.add(courseInfo);
+		}
+
+		return ResponseEntity.ok(result);
+	}
+
+
+	@PutMapping("/editCourse/{email}/{coursename}")
+	public ResponseEntity<Course> editCourseByEmailAndCoursename(
+		@PathVariable String email,
+		@PathVariable String coursename,
+		@RequestBody Course updatedCourse) {
+
+		Professor professor = professorService.fetchProfessorByEmail(email);
+		if (professor == null) {
+			return ResponseEntity.notFound().build();
+		}
+
+		Course existingCourse = courseService.fetchCourseByCoursename(coursename);
+		if (existingCourse == null || !existingCourse.getInstructorname().equals(professor.getProfessorname())) {
+			return ResponseEntity.notFound().build();
+		}
+
+		// Update course fields
+		if (updatedCourse.getCoursename() != null) existingCourse.setCoursename(updatedCourse.getCoursename());
+		if (updatedCourse.getDescription() != null) existingCourse.setDescription(updatedCourse.getDescription());
+
+		// Save updated course
+		Course editedCourse = courseService.saveCourse(existingCourse);
+
+		// Update enrollment table
+		enrollmentService.updateEnrollmentsByCourse(coursename, existingCourse.getCoursename(), existingCourse.getDescription());
+
+		// Update wishlist table
+		wishlistService.updateWishlistByCourse(coursename, existingCourse.getCoursename(), existingCourse.getDescription());
+		
+		chapterService.updateChaptersByCourse(coursename, existingCourse.getCoursename());
+		return ResponseEntity.ok(editedCourse);
 	}
 	
 	@PostMapping("/addnewchapter")
@@ -193,16 +257,28 @@ public class ProfessorController {
 		return new ResponseEntity<>(wishlistCount, HttpStatus.OK);
 	}
   
-	@GetMapping("/getcoursenames")
-    public ResponseEntity<List<String>> getCourseNames() throws Exception {
-        // Fetch courses of type 'YouTube'
-        List<Course> courses = courseService.getCoursesByTypeName("Youtube");
-        List<String> coursenames = new ArrayList<>();
-        for(Course obj : courses) {
-            coursenames.add(obj.getCoursename());
-        }
-        return new ResponseEntity<>(coursenames, HttpStatus.OK);
-    }
+	@GetMapping("/getcoursenames/{email}")
+	public ResponseEntity<List<String>> getCourseNames(@PathVariable String email) throws Exception {
+		// Fetch professor by email
+		Professor professor = professorService.fetchProfessorByEmail(email);
+		if (professor == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		// Fetch courses of type 'YouTube' for the specific professor
+		List<Course> courses = courseService.getCoursesByTypeNameAndInstructor("YouTube", professor.getProfessorname());
+		List<String> coursenames = new ArrayList<>();
+		for(Course obj : courses) {
+			coursenames.add(obj.getCoursename());
+		}
+		return new ResponseEntity<>(coursenames, HttpStatus.OK);
+	}
+
+	@GetMapping("/courses/uploaded-today")
+	public ResponseEntity<List<Course>> getCoursesUploadedToday() {
+		List<Course> todayCourses = courseService.getCoursesUploadedToday();
+		return new ResponseEntity<>(todayCourses, HttpStatus.OK);
+	}
 	
 	
 	public String getNewID()

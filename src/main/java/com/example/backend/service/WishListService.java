@@ -72,4 +72,13 @@ public class WishListService {
 	{
 		return (List<Wishlist>)wishlistRepo.findByLanguage(language);
 	}
+
+	public void updateWishlistByCourse(String oldCourseName, String newCourseName, String newDescription) {
+		List<Wishlist> wishlistItems = wishlistRepo.findAllByCoursename(oldCourseName);
+		for (Wishlist item : wishlistItems) {
+			item.setCoursename(newCourseName);
+			item.setDescription(newDescription);
+			wishlistRepo.save(item);
+		}
+	}
 }
