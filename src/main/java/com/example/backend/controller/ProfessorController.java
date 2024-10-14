@@ -275,7 +275,7 @@ public class ProfessorController {
 		}
 
 		// Fetch courses of type 'YouTube' for the specific professor
-		List<Course> courses = courseService.getCoursesByTypeNameAndInstructor("YouTube", professor.getProfessorname());
+		List<Course> courses = courseService.getCoursesByTypeNameAndInstructor("Youtube", professor.getProfessorname());
 		List<String> coursenames = new ArrayList<>();
 		for(Course obj : courses) {
 			coursenames.add(obj.getCoursename());
